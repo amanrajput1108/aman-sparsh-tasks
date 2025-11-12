@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Weekoff Entry Form</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-6">
+<main class="w-full max-w-5xl bg-white rounded-2xl shadow-lg p-8">
+
+  <h2 class="text-2xl font-semibold mb-6">Weekoff Entry Form</h2>
+
+  <form id="weekoffForm" class="space-y-8">
+
+    <!-- Employee Details -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div>
+        <label class="block text-sm font-medium text-slate-700">Employee Name</label>
+        <input type="text" name="employeeName" class="mt-1 block w-full rounded-md border-slate-200 shadow-sm p-2">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700">Employee ID</label>
+        <input type="text" name="employeeId" class="mt-1 block w-full rounded-md border-slate-200 shadow-sm p-2">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-slate-700">Department</label>
+        <select name="department" class="mt-1 block w-full rounded-md border-slate-200 shadow-sm p-2">
+          <option>Select department</option>
+          <option>Engineering</option>
+          <option>HR</option>
+          <option>Finance</option>
+          <option>Operations</option>
+          <option>Sales</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- ✅ NEW WEEKOFF TABLE -->
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-medium">Weekoff Selection</h3>
+      </div>
+
+      <!-- Toggle -->
+      <div class="flex items-center gap-2 mb-3">
+        <input type="checkbox" id="halfWorkToggle" class="w-4 h-4">
+        <label for="halfWorkToggle" class="text-sm font-medium text-slate-700">
+          Half working day is half weekend
+        </label>
+      </div>
+
+      <div class="overflow-x-auto border rounded-lg">
+        <table class="min-w-full text-center border">
+          <thead class="bg-slate-100 text-sm">
+            <tr>
+              <th class="border p-3">Day</th>
+              <th class="border p-3">1st</th>
+              <th class="border p-3">2nd</th>
+              <th class="border p-3">3rd</th>
+              <th class="border p-3">4th</th>
+              <th class="border p-3">5th</th>
+            </tr>
+          </thead>
+
+          <tbody id="weekTableBody">
+            <!-- Days dynamically inserted by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Submit Buttons -->
+    <div class="flex justify-end gap-3">
+      <button type="reset" class="px-4 py-2 rounded-md border border-slate-300">Cancel</button>
+      <button type="submit" class="px-4 py-2 rounded-md bg-indigo-600 text-white">Save</button>
+    </div>
+
+  </form>
+</main>
+
+<script>
+  const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const tbody = document.getElementById("weekTableBody");
+  const toggle = document.getElementById("halfWorkToggle");
+
+  // Generate Table Rows
+  days.forEach(day => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td class="border p-3 font-medium">${day}</td>
+      ${[1,2,3,4,5].map(() => `
+        <td class="border p-2">
+          <input type="checkbox" class="week-checkbox w-4 h-4 mb-2">
+
+          <select class="hidden dropdown w-full text-sm border rounded-md p-1 mt-1">
+            <option value="Full Day">Full Day</option>
+            <option value="1st Half">1st Half</option>
+            <option value="2nd Half">2nd Half</option>
+          </select>
+        </td>`).join("")}
+    `;
+    tbody.appendChild(row);
+  });
+
+  // Logic: show dropdown only when toggle + checkbox checked
+  toggle.addEventListener("change", () => {
+    document.querySelectorAll(".dropdown").forEach(d => {
+      d.classList.toggle("hidden", !toggle.checked);
+    });
+  });
+
+  document.querySelectorAll(".week-checkbox").forEach((chk, idx) => {
+    chk.addEventListener("change", () => {
+      const dropdown = document.querySelectorAll(".dropdown")[idx];
+      dropdown.classList.toggle("hidden", !(toggle.checked && chk.checked));
+    });
+  });
+</script>
+
+</body>
+</html>
